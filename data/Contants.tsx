@@ -1,6 +1,6 @@
-import dedent from 'dedent';
+import dedent from "dedent";
 export default {
-    PROMPT_OLD: dedent`
+  PROMPT_OLD: dedent`
     You are an expert frontend frontend React developer. You will be given a description of a website from the user, and then you will return code for it  using React Javascript and Tailwind CSS. Follow the instructions carefully, it is very important for my job. I will tip you $1 million if you do a good job:
 
 - Think carefully step by step about how to recreate the UI described in the prompt.
@@ -25,7 +25,7 @@ export default {
 - Use margin and padding to style the components and ensure the components are spaced out nicely
 - Please ONLY return the full React code starting with the imports, nothing else. It's very important for my job that you only return the React code with imports. 
 - DO NOT START WITH \\\jsx or \\\`typescript or \\\`javascript or \\\`tsx or \\\.`,
-    PROMPT: dedent`:You are a professtional react developer and UI/UX designer
+  PROMPT: dedent`:You are a professtional react developer and UI/UX designer
 - based on provider wireframe image, make sure to generate similar web page
 - and Depends on the description write a react and tailwindcss code 
 - Make sure to add Header and Footer with proper option as metioned in wireframe if Not then add option releated to description
@@ -38,48 +38,47 @@ export default {
 - Only give react+ tailwindcss code and do not write any text other than code
 `,
 
-    AiModelList: [
-        {
-            name: 'Gemini Google',
-            icon: '/google.png',
-            modelName: 'google/gemini-2.0-flash-001'
-        },
-        {
-            name: 'llama By Meta',
-            icon: '/meta.png',
-            modelName: 'google/gemini-2.0-flash-001'
-        },
-        {
-            name: 'Deepkseek',
-            icon: '/deepseek.png',
-            modelName: 'qwen/qwen-turbo'
-        }
-    ],
-    DEPENDANCY: {
-
-        "postcss": "^8",
-        "tailwindcss": "^3.4.1",
-        autoprefixer: "^10.0.0",
-        "uuid4": "^2.0.3",
-        "tailwind-merge": "^2.4.0",
-        "tailwindcss-animate": "^1.0.7",
-        "lucide-react": "^0.469.0",
-        "react-router-dom": "^7.1.1",
-        "firebase": "^11.1.0",
-        "@google/generative-ai": "^0.21.0",
-        "date-fns": "^4.1.0",
-        "react-chartjs-2": "^5.3.0",
-        "chart.js": "^4.4.7",
+  AiModelList: [
+    {
+      name: "Gemini Google",
+      icon: "/google.png",
+      modelName: "google/gemini-2.0-pro-exp-02-05:free",
     },
-    FILES: {
-        '/App.css': {
-            code: `
+    {
+      name: "llama By Meta",
+      icon: "/meta.png",
+      modelName: "meta-llama/llama-3.3-70b-instruct:free",
+    },
+    {
+      name: "Deepkseek",
+      icon: "/deepseek.png",
+      modelName: "deepseek/deepseek-r1-distill-qwen-32b:free",
+    },
+  ],
+  DEPENDANCY: {
+    postcss: "^8",
+    tailwindcss: "^3.4.1",
+    autoprefixer: "^10.0.0",
+    uuid4: "^2.0.3",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "lucide-react": "^0.469.0",
+    "react-router-dom": "^7.1.1",
+    firebase: "^11.1.0",
+    "@google/generative-ai": "^0.21.0",
+    "date-fns": "^4.1.0",
+    "react-chartjs-2": "^5.3.0",
+    "chart.js": "^4.4.7",
+  },
+  FILES: {
+    "/App.css": {
+      code: `
             @tailwind base;
 @tailwind components;
-@tailwind utilities;`
-        },
-        '/tailwind.config.js': {
-            code: `
+@tailwind utilities;`,
+    },
+    "/tailwind.config.js": {
+      code: `
             /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -89,15 +88,14 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}`
-        },
-        '/postcss.config.js': {
-            code: `/** @type {import('postcss-load-config').Config} */
+}`,
+    },
+    "/postcss.config.js": {
+      code: `/** @type {import('postcss-load-config').Config} */
 const config = {
   plugins: {
     tailwindcss: {},
-  },`
-        }
-    }
-
-}
+  },`,
+    },
+  },
+};

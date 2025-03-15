@@ -10,20 +10,24 @@ import {
 } from "@/components/ui/select";
 import uuid4 from "uuid4";
 import { Textarea } from "@/components/ui/textarea";
-import { CloudUpload, WandSparkles, X } from "lucide-react";
+import { CloudUpload, Loader2Icon, WandSparkles, X } from "lucide-react";
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/configs/firebaseConfig";
 import axios from "axios";
 import { useAuthContext } from "@/app/provider";
+import { useRouter } from "next/navigation";
 
 const ImageUpload = () => {
+  const router = useRouter();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { user } = useAuthContext();
   const [file, setFile] = useState<any>();
   const [model, setModel] = useState<string>();
   const [description, setDescription] = useState<string>();
+  const [loading, setLoading] = useState(false);
+
   const onImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
@@ -36,7 +40,9 @@ const ImageUpload = () => {
   const onConvertToCodeButtonClick = async () => {
     if (!file || !model || !description) {
       console.log("Select all fields...");
+      return;
     }
+    setLoading(true);
     //upload to firebase storage
     const fileName = Date.now() + ".png";
     const imageRef = ref(storage, "Wireframe_to_code/" + fileName);
@@ -59,6 +65,8 @@ const ImageUpload = () => {
       email: user?.email,
     });
     console.log(result.data);
+    setLoading(false);
+    router.push("/view-code/" + uid);
   };
 
   return (
@@ -138,9 +146,12 @@ const ImageUpload = () => {
       </div>
 
       <div className="mt-10 flex items-center justify-center">
-        <Button onClick={onConvertToCodeButtonClick}>
-          {" "}
-          <WandSparkles />
+        <Button onClick={onConvertToCodeButtonClick} disabled={loading}>
+          {loading ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            <WandSparkles />
+          )}
           Convert to Code
         </Button>
       </div>
