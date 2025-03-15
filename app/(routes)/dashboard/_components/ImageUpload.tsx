@@ -8,15 +8,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import uuid4 from "uuid4";
 import { Textarea } from "@/components/ui/textarea";
 import { CloudUpload, WandSparkles, X } from "lucide-react";
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/configs/firebaseConfig";
+import axios from "axios";
+import { useAuthContext } from "@/app/provider";
 
 const ImageUpload = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { user } = useAuthContext();
   const [file, setFile] = useState<any>();
   const [model, setModel] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -42,7 +46,21 @@ const ImageUpload = () => {
     });
     const imageUrl = await getDownloadURL(imageRef);
     console.log(imageUrl);
+
+    const uid = uuid4();
+    console.log(uid);
+
+    //save info to db
+    const result = await axios.post("/api/wireframe-to-code", {
+      uid: uid,
+      description: description,
+      imageUrl: imageUrl,
+      model: model,
+      email: user?.email,
+    });
+    console.log(result.data);
   };
+
   return (
     <div className="mt-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
