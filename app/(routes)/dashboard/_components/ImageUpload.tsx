@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import Constants from "@/data/Contants"
+import Constants from "@/data/Contants";
 import {
   Select,
   SelectContent,
@@ -12,16 +12,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { CloudUpload, WandSparkles, X } from "lucide-react";
 import Image from "next/image";
 import React, { ChangeEvent, useState } from "react";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/configs/firebaseConfig";
 
 const ImageUpload = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [file, setFile] = useState<any>();
   const [model, setModel] = useState<string>();
+  const [description, setDescription] = useState<string>();
   const onImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
       const imageUrl = URL.createObjectURL(files[0]);
       setPreviewUrl(imageUrl);
+      setFile(files[0]);
     }
+  };
+
+  const onConvertToCodeButtonClick = async () => {
+    if (!file || !model || !description) {
+      console.log("Select all fields...");
+    }
+    //upload to firebase storage
+    const fileName = Date.now() + ".png";
+    const imageRef = ref(storage, "Wireframe_to_code/" + fileName);
+
+    await uploadBytes(imageRef, file).then((resp) => {
+      console.log("Image uploaded....");
+    });
+    const imageUrl = await getDownloadURL(imageRef);
+    console.log(imageUrl);
   };
   return (
     <div className="mt-10">
@@ -92,6 +112,7 @@ const ImageUpload = () => {
             Enter description about your Webpage{" "}
           </h2>
           <Textarea
+            onChange={(event) => setDescription(event?.target.value)}
             className="mt-3 h-[200px]"
             placeholder="Write about your webpage"
           />
@@ -99,7 +120,7 @@ const ImageUpload = () => {
       </div>
 
       <div className="mt-10 flex items-center justify-center">
-        <Button>
+        <Button onClick={onConvertToCodeButtonClick}>
           {" "}
           <WandSparkles />
           Convert to Code
