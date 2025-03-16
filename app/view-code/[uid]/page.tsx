@@ -3,9 +3,12 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import Constants from "@/data/Contants";
 import { useEffect, useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { Loader2, LoaderCircle } from "lucide-react";
+import SelectionDetail from "../_components/SelectionDetail";
+import CodeEditor from "../_components/CodeEditor";
+import AppHeader from "@/app/_components/AppHeader";
 
-interface RECORD {
+export interface RECORD {
   id: number;
   description: string;
   code: any;
@@ -16,26 +19,28 @@ interface RECORD {
 
 const ViewCode = () => {
   const { uid } = useParams();
-  const [loading, setLoading] = useState(false)
-  const [codeResp, setCodeResp] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [codeResp, setCodeResp] = useState("");
+  const [record , setRecord] = useState<RECORD | null>()
 
   useEffect(() => {
     uid && GetRecordInfo();
   }, [uid]);
   const GetRecordInfo = async () => {
-    setLoading(true)
+    setLoading(true);
     const result = await axios.get("/api/wireframe-to-code?uid=" + uid);
     const resp = result?.data;
+    setRecord(result?.data)
     if (resp?.code == null) {
-      GenerateCode(resp);
+      // GenerateCode(resp);
     }
     if (resp?.error) {
       console.log("No record found");
     }
-    setLoading(false)
+    setLoading(false);
   };
   const GenerateCode = async (record: RECORD) => {
-    setLoading(true)
+    setLoading(true);
     const res = await fetch("/api/ai-model", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,15 +59,45 @@ const ViewCode = () => {
       const { done, value } = await reader.read();
       if (done) break;
 
-      const text = (decoder.decode(value)).replace('```jsx', '').replace('```javascript', '').replace('javascript', '').replace('jsx', '').replace('```', '');
-      setCodeResp((prev) => prev +  text)
+      const text = decoder
+        .decode(value)
+        .replace("```jsx", "")
+        .replace("```javascript", "")
+        .replace("javascript", "")
+        .replace("jsx", "")
+        .replace("```", "");
+      setCodeResp((prev) => prev + text);
     }
-    setLoading(false)
+    setLoading(false);
   };
+
+
   return (
     <div>
-      {loading && <LoaderCircle className="animate-spin" />}
-      <p>{codeResp}</p>
+      <AppHeader hideSidebar={true} />
+      <div className="grid grid-cols-1 md:grid-cols-5 p-5 gap-10">
+        <div>
+          {/* Selection Details  */}
+          <SelectionDetail record={record} />
+        </div>
+        <div className="col-span-4">
+          {/* Code Editor  */}
+          {loading ? (
+            <div>
+              <h2
+                className="font-bold text-2xl text-center p-20 flex items-center justify-center
+                bg-slate-100 h-[80vh] rounded-xl
+                "
+              >
+                {" "}
+                <Loader2 className="animate-spin" /> Anaylzing the Wireframe...
+              </h2>
+            </div>
+          ) : (
+            <CodeEditor />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
