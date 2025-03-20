@@ -28,6 +28,8 @@ const ViewCode = () => {
     uid && GetRecordInfo();
   }, [uid]);
   const GetRecordInfo = async () => {
+    setIsReady(false);
+    setCodeResp('')
     setLoading(true);
     const result = await axios.get("/api/wireframe-to-code?uid=" + uid);
     const resp = result?.data;
@@ -80,7 +82,7 @@ const ViewCode = () => {
       <div className="grid grid-cols-1 md:grid-cols-5 p-5 gap-10">
         <div>
           {/* Selection Details  */}
-          <SelectionDetail record={record} />
+          <SelectionDetail record={record} isReady={isReady} regenrateCode={() => {GetRecordInfo()}} />
         </div>
         <div className="col-span-4">
           {/* Code Editor  */}
