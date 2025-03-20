@@ -24,12 +24,20 @@ export async function GET(req: NextResponse) {
   const reqUrl = req.url;
   const { searchParams } = new URL(reqUrl);
   const uid = searchParams?.get("uid");
+  const email = searchParams?.get("email");
   if (uid) {
     const result = await db
       .select()
       .from(WireframeToCodeTable)
       .where(eq(WireframeToCodeTable.uid, uid));
     return NextResponse.json(result[0]);
+  }
+  else if (email) {
+    const result = await db
+      .select()
+      .from(WireframeToCodeTable)
+      .where(eq(WireframeToCodeTable.createdBy, email));
+    return NextResponse.json(result);
   }
   return NextResponse.json({ error: "No record found!!" });
 }
