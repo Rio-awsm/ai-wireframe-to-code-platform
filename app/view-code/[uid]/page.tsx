@@ -15,13 +15,14 @@ export interface RECORD {
   imageUrl: string;
   model: string;
   createdBy: string;
+  uid: string;
 }
 
 const ViewCode = () => {
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
   const [codeResp, setCodeResp] = useState("");
-  const [record , setRecord] = useState<RECORD | null>()
+  const [record, setRecord] = useState<RECORD | null>();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -29,13 +30,17 @@ const ViewCode = () => {
   }, [uid]);
   const GetRecordInfo = async () => {
     setIsReady(false);
-    setCodeResp('')
+    setCodeResp("");
     setLoading(true);
     const result = await axios.get("/api/wireframe-to-code?uid=" + uid);
     const resp = result?.data;
-    setRecord(result?.data)
+    setRecord(result?.data);
     if (resp?.code == null) {
       GenerateCode(resp);
+    } else {
+      setCodeResp(resp?.code?.resp);
+      setLoading(false);
+      setIsReady(true);
     }
     if (resp?.error) {
       console.log("No record found");
@@ -73,8 +78,22 @@ const ViewCode = () => {
     }
     setIsReady(true);
     setLoading(false);
+    UpdateCOdeToDb();
   };
 
+  useEffect(() => {
+    if (codeResp != "" && record?.uid && isReady && record?.code == null) {
+      UpdateCOdeToDb();
+    }
+  }, [codeResp && record && isReady]);
+
+  const UpdateCOdeToDb = async () => {
+    const result = await axios.put("/api/wireframe-to-code", {
+      uid: record?.uid,
+      codeResp: { resp: codeResp },
+    });
+    console.log(result);
+  };
 
   return (
     <div>
@@ -82,7 +101,13 @@ const ViewCode = () => {
       <div className="grid grid-cols-1 md:grid-cols-5 p-5 gap-10">
         <div>
           {/* Selection Details  */}
-          <SelectionDetail record={record} isReady={isReady} regenrateCode={() => {GetRecordInfo()}} />
+          <SelectionDetail
+            record={record}
+            isReady={isReady}
+            regenrateCode={() => {
+              GetRecordInfo();
+            }}
+          />
         </div>
         <div className="col-span-4">
           {/* Code Editor  */}
@@ -98,7 +123,7 @@ const ViewCode = () => {
               </h2>
             </div>
           ) : (
-            <CodeEditor codeResp={codeResp} isReady={isReady}/>
+            <CodeEditor codeResp={codeResp} isReady={isReady} />
           )}
         </div>
       </div>
