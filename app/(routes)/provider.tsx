@@ -30,7 +30,6 @@ function DashboardProvider({
             userName: user?.user?.displayName,
             userEmail: user?.user?.email
         });
-        console.log(user);
     }
 
 

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { LuFrame } from "react-icons/lu";
 
 const items = [
   {
@@ -42,19 +43,13 @@ const items = [
 ];
 
 export function AppSidebar() {
-    const path = usePathname();
+  const path = usePathname();
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="p-4">
-          <Image
-            src={"./logo.svg"}
-            alt="logo"
-            width={100}
-            height={100}
-            className="w-full h-full"
-          />
-          <h2 className="text-sm text-gray-400 text-center">Build Awesome</h2>
+        <div className="p-4 flex gap-4 items-center">
+          <LuFrame className="font-bold text-4xl text-primary" />
+          <h1 className="font-bold text-primary text-4xl">Framio</h1>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -65,7 +60,9 @@ export function AppSidebar() {
                 <a
                   href={item.url}
                   key={index}
-                  className={`p-2 text-lg flex gap-2 items-center hover:bg-gray-100 rounded-lg ${path == item.url && 'bg-gray-200'}`}
+                  className={`p-2 text-lg flex gap-2 items-center hover:bg-gray-100 rounded-lg ${
+                    path == item.url && "bg-gray-200"
+                  }`}
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.title}</span>

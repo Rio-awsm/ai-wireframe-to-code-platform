@@ -28,16 +28,16 @@ const ViewCode = () => {
   useEffect(() => {
     uid && GetRecordInfo();
   }, [uid]);
-  const GetRecordInfo = async () => {
+  const GetRecordInfo = async (regen = false) => {
     setIsReady(false);
     setCodeResp("");
     setLoading(true);
     const result = await axios.get("/api/wireframe-to-code?uid=" + uid);
     const resp = result?.data;
     setRecord(result?.data);
-    if (resp?.code == null) {
+    if (resp?.code == null || regen) {
       GenerateCode(resp);
-    } else {
+  } else {
       setCodeResp(resp?.code?.resp);
       setLoading(false);
       setIsReady(true);
@@ -77,7 +77,6 @@ const ViewCode = () => {
       setCodeResp((prev) => prev + text);
     }
     setIsReady(true);
-    setLoading(false);
     UpdateCOdeToDb();
   };
 
@@ -92,7 +91,6 @@ const ViewCode = () => {
       uid: record?.uid,
       codeResp: { resp: codeResp },
     });
-    console.log(result);
   };
 
   return (
@@ -105,7 +103,7 @@ const ViewCode = () => {
             record={record}
             isReady={isReady}
             regenrateCode={() => {
-              GetRecordInfo();
+              GetRecordInfo(true);
             }}
           />
         </div>

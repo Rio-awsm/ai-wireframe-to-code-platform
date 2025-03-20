@@ -17,7 +17,6 @@ const Design = () => {
     const result = await axios.get(
       "/api/wireframe-to-code?email=" + user?.email
     );
-    console.log(result.data);
     setWireframeList(result.data);
   };
 

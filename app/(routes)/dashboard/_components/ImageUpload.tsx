@@ -39,7 +39,6 @@ const ImageUpload = () => {
 
   const onConvertToCodeButtonClick = async () => {
     if (!file || !model || !description) {
-      console.log("Select all fields...");
       return;
     }
     setLoading(true);
@@ -51,10 +50,8 @@ const ImageUpload = () => {
       console.log("Image uploaded....");
     });
     const imageUrl = await getDownloadURL(imageRef);
-    console.log(imageUrl);
 
     const uid = uuid4();
-    console.log(uid);
 
     //save info to db
     const result = await axios.post("/api/wireframe-to-code", {
@@ -64,7 +61,6 @@ const ImageUpload = () => {
       model: model,
       email: user?.email,
     });
-    console.log(result.data);
     setLoading(false);
     router.push("/view-code/" + uid);
   };
