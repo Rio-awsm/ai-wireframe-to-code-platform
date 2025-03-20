@@ -22,6 +22,7 @@ const ViewCode = () => {
   const [loading, setLoading] = useState(false);
   const [codeResp, setCodeResp] = useState("");
   const [record , setRecord] = useState<RECORD | null>()
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     uid && GetRecordInfo();
@@ -32,7 +33,7 @@ const ViewCode = () => {
     const resp = result?.data;
     setRecord(result?.data)
     if (resp?.code == null) {
-      // GenerateCode(resp);
+      GenerateCode(resp);
     }
     if (resp?.error) {
       console.log("No record found");
@@ -68,6 +69,7 @@ const ViewCode = () => {
         .replace("```", "");
       setCodeResp((prev) => prev + text);
     }
+    setIsReady(true);
     setLoading(false);
   };
 
@@ -94,7 +96,7 @@ const ViewCode = () => {
               </h2>
             </div>
           ) : (
-            <CodeEditor />
+            <CodeEditor codeResp={codeResp} isReady={isReady}/>
           )}
         </div>
       </div>
